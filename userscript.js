@@ -88,6 +88,13 @@ const DLFEATURES=["css","jsxLiterals","usestring","stores"],DLVERSION="0.0.25";!
             .answer {
                 color: red;
             }
+
+            span:hover {
+                background-color: ${TAILWIND_COLORS.stone[700]};
+                transition-property: all;
+                transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+                transition-duration: 150ms;
+            }
         `
 
         const appContainer = css`
@@ -125,11 +132,8 @@ const DLFEATURES=["css","jsxLiterals","usestring","stores"],DLVERSION="0.0.25";!
              ${use(modeState.mode, (mode) =>
                 mode === "general"
                   ? html`<div class=${answerContainer} id="answerContainer">${use(answerState.list, (list) => list.map((e) => {
-                      if (e.length === 2) {
-                          return e[1]
-                      } else {
-                          return e
-                      }
+                      console.log("NEW RERENDER")
+                      return e[1]
                   }))}</div>`
                   : html`<button>Skip Video</button>`
               )}
@@ -234,7 +238,8 @@ const DLFEATURES=["css","jsxLiterals","usestring","stores"],DLVERSION="0.0.25";!
                     const correctChoice = attempt.choices.findIndex(c => c.correct)
                     if (correctChoice && correctSelect) {
                         const correct = attempt.choices[correctChoice]
-                        answerState.list = answerState.list.filter(a => a.content !== correct.content)
+                        console.log("GOT CORRECT", correct)
+                        answerState.list = answerState.list.filter(a => a[0].content !== correct.content)
                         //console.log(answerState.list)
                     }
                   }
@@ -283,7 +288,7 @@ const DLFEATURES=["css","jsxLiterals","usestring","stores"],DLVERSION="0.0.25";!
 
        `
       if (type === "radio") {
-        answerState.list = [...answerState.list, html`<span class=${answerContentStyle} on:click=${() => writeToClipboard(data.content, "Copied to clipboard")}>${data.content}</span>`]
+        answerState.list = [...answerState.list, [data, html`<span class=${answerContentStyle} on:click=${() => writeToClipboard(data.content, "Copied to clipboard")}>${data.content}</span>`]]
       } else if (type === "expression") {
         const randID = crypto.randomUUID()
         answerState.list = [...answerState.list, [data.value, html`<span class=${answerContentStyle} id=${randID} on:click=${() => writeToClipboard(data.value, "Copied to clipboard")}></span>`]]
@@ -336,5 +341,4 @@ const DLFEATURES=["css","jsxLiterals","usestring","stores"],DLVERSION="0.0.25";!
     };
 
 })()
-
 
