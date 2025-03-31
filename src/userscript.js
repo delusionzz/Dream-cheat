@@ -816,7 +816,7 @@ const DLFEATURES = ["css", "jsxLiterals", "usestring", "stores"],
       async apply(target, thisArg, argumentsList) {
         const r =
           argumentsList[0] instanceof Request ? argumentsList[0] : undefined;
-        const rc = r.clone();
+        const rc = r instanceof Request ? r.clone() : undefined;
         try {
           const response = await Reflect.apply(target, thisArg, argumentsList);
           if (r instanceof Request && r.url.includes("getAssessmentItem")) {
@@ -867,6 +867,7 @@ const DLFEATURES = ["css", "jsxLiterals", "usestring", "stores"],
 
                 console.log("ATTEMPT EXPRESSION: ", attemptState[key]);
               } else if (keyStr.includes("radio")) {
+                console.log("GOT REMOVE RADIO")
                 const attempt = attemptState[key];
                 const correctSelect = attempt.choiceStates.findIndex(
                   (c) => c.selected
