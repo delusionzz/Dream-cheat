@@ -12,7 +12,7 @@
 // dreamland.js, MIT license
 const DLFEATURES = ["css", "jsxLiterals", "usestring", "stores"];
 const DLVERSION = "0.0.25";
-!(function (e) {
+!function (e) {
   const [t, n, r, s, i, l, o] = Array.from(Array(7), Symbol),
     f = "dlcomponent",
     a = {};
@@ -528,7 +528,8 @@ const DLVERSION = "0.0.25";
     (e.isDLPtr = j),
     (e.isStateful = S),
     (e.scope = p);
-})(window)(() => {
+};
+window(() => {
   const TAILWIND_COLORS = {
     stone: {
       50: "oklch(0.985 0.001 106.423)",
