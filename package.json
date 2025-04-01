@@ -1,8 +1,12 @@
 {
   "name": "dream-cheat",
   "private": true,
+  "scripts": {
+    "minify": "terser src/userscript.js -o src/userscript.min.js --compress --mangle"
+  },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "terser": "^5.39.0"
   },
   "peerDependencies": {
     "typescript": "^5"

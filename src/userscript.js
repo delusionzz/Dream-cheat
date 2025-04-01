@@ -10,82 +10,61 @@
 // ==/UserScript==
 
 // dreamland.js, MIT license
-const DLFEATURES = ["css", "jsxLiterals", "usestring", "stores"],
-  DLVERSION = "0.0.25";
+const DLFEATURES = ["css", "jsxLiterals", "usestring", "stores"];
+const DLVERSION = "0.0.25";
 !(function (e) {
-  class t extends Error {
-    constructor(e) {
-      super("[dreamland-js/dev] " + e), (this.name = "DreamlandDevError");
-    }
-  }
-  function n(e, n) {
-    e ||
-      (function (e) {
-        throw new t("fatal: " + e);
-      })(n);
-  }
-  const [r, s, o, i, l, a, c] = Array.from(Array(7), Symbol),
-    f = "dlcomponent";
-  var u = Object.freeze({
-    __proto__: null,
-    IF: a,
-    LISTENERS: l,
-    PROXY: o,
-    STATEHOOK: c,
-    STEPS: i,
-    TARGET: s,
-    USE_COMPUTED: r,
-    cssBoundary: f,
-  });
-  const d = {},
-    p = 50;
-  function m() {
+  const [t, n, r, s, i, l, o] = Array.from(Array(7), Symbol),
+    f = "dlcomponent",
+    a = {};
+  function c() {
     return `${Array(4)
       .fill(0)
       .map(() => Math.floor(36 * Math.random()).toString(36))
       .join("")}`;
   }
-  const h = (e) =>
+  const u = (e) =>
       function (t, ...n) {
         let r = "";
         for (let e of t) r += e + (n.shift() || "");
-        return y("dl" + m(), r, e);
+        return h("dl" + c(), r, e);
       },
-    b = h(!1),
-    g = h(!0);
-  function y(e, t, n) {
-    let r = d[t];
+    d = u(!1),
+    p = u(!0);
+  function h(e, t, n) {
+    let r = a[t];
     if (r) return r;
-    d[t] = e;
+    a[t] = e;
     const s = document.createElement("style");
     document.head.appendChild(s);
-    let o = "",
-      i = "";
+    let i = "",
+      l = "";
     for (t += "\n"; ; ) {
       let [e, ...n] = t.split("\n");
       if (e.trim().endsWith("{")) break;
-      if (((i += e + "\n"), !(t = n.join("\n")))) break;
+      if (((l += e + "\n"), !(t = n.join("\n")))) break;
     }
     s.textContent = t;
-    let l = !0;
-    if (((l = !!window.CSSScopeRule), n && l)) {
+    let o = !0;
+    if (((o = !!window.CSSScopeRule), n && o)) {
       let t = "";
       for (const n of s.sheet.cssRules)
         n.selectorText || n.media
           ? n.selectorText?.startsWith(":")
             ? ((n.selectorText = `.${e}${n.selectorText}`), (t += n.cssText))
-            : (o += n.cssText)
+            : (i += n.cssText)
           : (t += n.cssText);
-      s.textContent = `.${e} {${i}} @scope (.${e}) to (:not(.${e}).${f} *) { ${o} } ${t}`;
+      s.textContent = `.${e} {${l}} @scope (.${e}) to (:not(.${e}).${f} *) { ${i} } ${t}`;
     } else {
       let t = "";
       n &&
-        !l &&
+        !o &&
         (t = (function (e) {
           let t = `:not(${e}).${f}`,
             n = (r, s) =>
               `${r} *${
-                s > p ? "" : `:not(${n(r + " " + (s % 2 == 0 ? e : t), s + 1)})`
+                s > 50
+                  ? ""
+                  : `:not(${n(r + " " + (s % 2 == 0 ? e : t), s + 1)})`
               }`;
           return `:not(${n(t, 0)})`;
         })(`.${e}`));
@@ -101,220 +80,199 @@ const DLFEATURES = ["css", "jsxLiterals", "usestring", "stores"],
                 : `.${e} ${n}${t}`
             )
             .join(", ")),
-          (o += n.cssText);
+          (i += n.cssText);
       };
       for (const e of s.sheet.cssRules)
         e.media && e.media.mediaText
-          ? ((o += `@media(${e.media.mediaText}){`),
+          ? ((i += `@media(${e.media.mediaText}){`),
             Array.from(e.cssRules).map(r),
-            (o += "}"))
+            (i += "}"))
           : r(e);
-      s.textContent = `.${e} {${i}}${o}`;
+      s.textContent = `.${e} {${l}}${i}`;
     }
     return e;
   }
-  let $ = document;
-  const v = Symbol();
-  let E = !1;
+  let m = document;
+  const g = Symbol();
+  let b = !1;
   Object.defineProperty(window, "use", {
     get: () => (
-      (E = !0),
-      (e, t, ...l) => {
-        if (
-          (n(
-            j(e) || A(e) || (e instanceof Array && "raw" in e),
-            "a value was passed into use() that was not part of a stateful context"
-          ),
-          e instanceof Array && "raw" in e)
-        )
-          return S(e, t, ...l);
-        E = !1;
-        let a = {
+      (b = !0),
+      (e, i, ...l) => {
+        if ((w(e) || j(e), e instanceof Array && "raw" in e))
+          return y(e, i, ...l);
+        b = !1;
+        let o = {
           get value() {
             return (function (e) {
-              let t = e[o],
-                n = t[i],
-                l = e[r],
-                a = t[s];
-              for (let e of n) if (((a = a[e]), !T(a))) break;
-              for (let e of l) a = e(a);
-              return a;
-            })(a);
+              let i = e[r],
+                l = i[s],
+                o = e[t],
+                f = i[n];
+              for (let e of l) if (((f = f[e]), !v(f))) break;
+              for (let e of o) f = e(f);
+              return f;
+            })(o);
           },
         };
-        if (A(e)) {
-          let n = [...e[r]];
-          t && n.push(t), (a[o] = e[o]), (a[r] = n);
-        } else (a[o] = e), (a[r] = t ? [t] : []);
-        return a;
+        if (j(e)) {
+          let n = [...e[t]];
+          i && n.push(i), (o[r] = e[r]), (o[t] = n);
+        } else (o[r] = e), (o[t] = i ? [i] : []);
+        return o;
       }
     ),
   }),
     Object.defineProperty(window, "useChange", {
       get: () => (
-        (E = !0),
+        (b = !0),
         (e, t) => {
-          (E = !1), (e = e instanceof Array ? e : [e]);
-          for (let r of e)
-            n(
-              j(r) || A(r),
-              "a value was passed into useChange() that was not part of a stateful context"
-            ),
-              N(use(r), t);
+          (b = !1), (e = e instanceof Array ? e : [e]);
+          for (let n of e) w(n) || j(n), T(use(n), t);
         }
       ),
     });
-  const S = (e, ...t) => {
-    E = !1;
+  const y = (e, ...t) => {
+    b = !1;
     let n = x({});
     const r = [];
     for (const s in e)
       if ((r.push(e[s]), t[s])) {
         let e = t[s];
-        if ((j(e) && (e = use(e)), A(e))) {
+        if ((w(e) && (e = use(e)), j(e))) {
           const t = r.length;
           let s;
-          N(use(e), (e) => {
+          T(use(e), (e) => {
             r[t] = String(e);
-            let o = r.join("");
-            o != s && (n.string = o), (s = o);
+            let i = r.join("");
+            i != s && (n.string = i), (s = i);
           });
         } else r.push(String(e));
       }
     return (n.string = r.join("")), use(n.string);
   };
-  let w = new Map();
+  let $ = new Map();
   function x(e) {
-    n(T(e), "$state() requires an object"), (e[l] = []), (e[s] = e);
-    let t = Symbol.toPrimitive,
-      a = new Proxy(e, {
-        get(e, n, l) {
-          if (E) {
-            let a = Symbol(),
-              c = new Proxy(
-                { [s]: e, [o]: l, [i]: [n], [t]: () => a },
+    v(e), (e[i] = []), (e[n] = e);
+    let l = Symbol.toPrimitive,
+      f = new Proxy(e, {
+        get(e, i, o) {
+          if (b) {
+            let f = Symbol(),
+              a = new Proxy(
+                { [n]: e, [r]: o, [s]: [i], [l]: () => f },
                 {
-                  get: (e, n) =>
-                    [s, o, i, r, t].includes(n)
-                      ? e[n]
-                      : ((n = w.get(n) || n), e[i].push(n), c),
+                  get: (e, i) =>
+                    [n, r, s, t, l].includes(i)
+                      ? e[i]
+                      : ((i = $.get(i) || i), e[s].push(i), a),
                 }
               );
-            return w.set(a, c), c;
+            return $.set(f, a), a;
           }
-          return Reflect.get(e, n, l);
+          return Reflect.get(e, i, o);
         },
         set(e, t, n) {
           let r = Reflect.set(e, t, n);
-          for (let r of e[l]) r(e, t, n);
-          return e[c] && e[c](e, t, e[t]), r;
+          for (let r of e[i]) r(e, t, n);
+          return e[o] && e[o](e, t, e[t]), r;
         },
       });
-    return a;
+    return f;
   }
-  let T = (e) => e instanceof Object,
-    L = (e) => "function" == typeof e;
-  function O(e) {
-    return T(e) && l in e;
+  let v = (e) => e instanceof Object;
+  function S(e) {
+    return v(e) && i in e;
+  }
+  function w(e) {
+    return v(e) && s in e;
   }
   function j(e) {
-    return T(e) && i in e;
+    return v(e) && t in e;
   }
-  function A(e) {
-    return T(e) && r in e;
+  function L(e) {
+    return 0 != e[t].length;
   }
-  function k(e) {
-    return 0 != e[r].length;
-  }
-  function N(e, t) {
-    n(A(e), "handle() requires a stateful object"),
-      n(L(t), "handle() requires a callback function");
-    let a,
-      c = e[o],
+  function T(e, l) {
+    j(e);
+    let o,
       f = e[r],
-      u = [];
-    function d() {
-      let e = c[s];
-      for (a of u) if (((e = e[a]), !T(e))) break;
-      for (let t of f) e = t(e);
-      t(e);
+      a = e[t],
+      c = [];
+    function u() {
+      let e = f[n];
+      for (o of c) if (((e = e[o]), !v(e))) break;
+      for (let t of a) e = t(e);
+      l(e);
     }
-    let p = (e, t) =>
-      function n(r, o, i) {
-        if (o === u[t] && e === r && (d(), T(i))) {
-          let e = i[l];
-          e && !e.includes(n) && e.push(p(i[s], t + 1));
+    let d = (e, t) =>
+      function r(s, l, o) {
+        if (l === c[t] && e === s && (u(), v(o))) {
+          let e = o[i];
+          e && !e.includes(r) && e.push(d(o[n], t + 1));
         }
       };
-    for (let e in c[i]) {
-      let t = c[i][e];
-      T(t) && t[s]
-        ? N(t, (t) => {
-            (u[e] = t), d();
+    for (let e in f[s]) {
+      let t = f[s][e];
+      v(t) && t[n]
+        ? T(t, (t) => {
+            (c[e] = t), u();
           })
-        : (u[e] = t);
+        : (c[e] = t);
     }
-    let m = p(c[s], 0);
-    c[s][l].push(m), m(c[s], u[0], c[s][u[0]]);
+    let p = d(f[n], 0);
+    f[n][i].push(p), p(f[n], c[0], f[n][c[0]]);
   }
-  function _(e, t, n) {
-    let r, s, o, i;
-    N(e, (e) => {
-      (o = s?.[0]),
-        o && (r = o.previousSibling || (i = o.parentNode)),
+  function k(e, t, n) {
+    let r, s, i, l;
+    T(e, (e) => {
+      (i = s?.[0]),
+        i && (r = i.previousSibling || (l = i.parentNode)),
         s && s.forEach((e) => e.remove()),
-        (s = P(n ? (e ? n.then : n.otherwise) : e, (e) => {
-          r ? (i ? (r.prepend(e), (i = null)) : r.after(e), (r = e)) : t(e);
+        (s = N(n ? (e ? n.then : n.otherwise) : e, (e) => {
+          r ? (l ? (r.prepend(e), (l = null)) : r.after(e), (r = e)) : t(e);
         }));
     });
   }
-  let R = (e) => (t) => {
-    let n = e[o],
-      r = e[i],
-      s = 0;
-    for (; s < r.length - 1; s++) if (((n = n[r[s]]), !T(n))) return;
-    n[r[s]] = t;
+  let O = (e) => (t) => {
+    let n = e[r],
+      i = e[s],
+      l = 0;
+    for (; l < i.length - 1; l++) if (((n = n[i[l]]), !v(n))) return;
+    n[i[l]] = t;
   };
-  function D(e, t, ...r) {
-    if (e == v) return r;
+  function A(e, t, ...n) {
+    if (e == g) return n;
     if ("function" == typeof e) {
       let s = x(Object.create(e.prototype));
       for (let e in t) {
-        let r = t[e];
+        let n = t[e];
         if (e.startsWith("bind:")) {
-          n(A(r), "bind: requires a reference pointer from use"),
-            n(!k(r), "bind: requires a reference pointer without mappings");
-          let i = R(r[o]),
+          j(n), L(n);
+          let i = O(n[r]),
             l = e.substring(5);
           if ("this" == l) i(s);
           else {
             let e = !1;
-            N(r, (t) => {
+            T(n, (t) => {
               e ? (e = !1) : ((e = !0), (s[l] = t));
             }),
-              N(use(s[l]), (t) => {
+              T(use(s[l]), (t) => {
                 e ? (e = !1) : ((e = !0), i(t));
               });
           }
           delete t[e];
-        } else A(r) && (N(r, (t) => (s[e] = t)), delete t[e]);
+        } else j(n) && (T(n, (t) => (s[e] = t)), delete t[e]);
       }
       Object.assign(s, t), (s.children = []);
-      for (let e of r) P(e, s.children.push.bind(s.children));
+      for (let e of n) N(e, s.children.push.bind(s.children));
       let i = e.apply(s);
-      n(!(i instanceof Array), "Functional component cannot return a Fragment"),
-        n(i instanceof Node, "Functional component must return a Node"),
-        n(
-          !("$" in i),
-          "Functional component cannot have another functional component at root level"
-        ),
-        (i.$ = s),
-        (s.root = i);
+      (i.$ = s), (s.root = i);
       let l = i.classList,
-        a = s.css,
-        c = e.name.replace(/\$/g, "-");
+        o = s.css,
+        a = e.name.replace(/\$/g, "-");
       return (
-        a && l.add(y(`${c}-${m()}`, a, !0)),
+        o && l.add(h(`${a}-${c()}`, o, !0)),
         s._leak || l.add(f),
         i.setAttribute("data-component", e.name),
         "function" == typeof s.mount && s.mount(),
@@ -322,9 +280,9 @@ const DLFEATURES = ["css", "jsxLiterals", "usestring", "stores"],
       );
     }
     let s = t?.xmlns,
-      i = s ? $.createElementNS(s, e) : $.createElement(e);
-    for (let e of r) {
-      P(e, i.append.bind(i));
+      i = s ? m.createElementNS(s, e) : m.createElement(e);
+    for (let e of n) {
+      N(e, i.append.bind(i));
     }
     if (!t) return i;
     ((e, n) => {
@@ -332,15 +290,12 @@ const DLFEATURES = ["css", "jsxLiterals", "usestring", "stores"],
       n(t[e]), delete t[e];
     })("class", (e) => {
       if (
-        (n(
-          "string" == typeof e || e instanceof Array || A(e),
-          "class must be a string or ar ray (r pointer)"
-        ),
+        ("string" == typeof e || e instanceof Array || j(e),
         "string" != typeof e)
       )
-        if (A(e)) {
+        if (j(e)) {
           let t = "";
-          N(e, (e) => {
+          T(e, (e) => {
             for (let e of t.split(" ")) e && i.classList.remove(e);
             if ("string" == typeof e) {
               for (let t of e.split(" ")) t && i.classList.add(t);
@@ -349,9 +304,9 @@ const DLFEATURES = ["css", "jsxLiterals", "usestring", "stores"],
           });
         } else
           for (let t of e)
-            if (A(t)) {
+            if (j(t)) {
               let e = null;
-              N(t, (t) => {
+              T(t, (t) => {
                 "string" == typeof e && i.classList.remove(e),
                   i.classList.add(t),
                   (e = t);
@@ -360,248 +315,220 @@ const DLFEATURES = ["css", "jsxLiterals", "usestring", "stores"],
       else i.setAttribute("class", e);
     });
     for (let e in t) {
-      let r = t[e];
+      let n = t[e];
       if (e.startsWith("bind:")) {
-        n(A(r), "bind: requires a reference pointer from use"),
-          n(!k(r), "bind: requires a reference pointer without mappings");
+        j(n), L(n);
         let s = e.substring(5),
-          l = R(r[o]);
+          l = O(n[r]);
         "this" == s
           ? l(i)
           : "value" == s
-          ? (N(r, (e) => (i.value = e)),
+          ? (T(n, (e) => (i.value = e)),
             i.addEventListener("change", () => l(i.value)))
           : "checked" == s &&
-            (N(r, (e) => (i.checked = e)),
+            (T(n, (e) => (i.checked = e)),
             i.addEventListener("click", () => l(i.checked))),
           delete t[e];
       }
       if (e.startsWith("class:")) {
-        let n = e.substring(6);
-        A(r)
-          ? N(r, (e) => {
-              e ? i.classList.add(n) : i.classList.remove(n);
+        let r = e.substring(6);
+        j(n)
+          ? T(n, (e) => {
+              e ? i.classList.add(r) : i.classList.remove(r);
             })
-          : r && i.classList.add(n),
+          : n && i.classList.add(r),
           delete t[e];
       }
-      if ("style" == e && T(r) && !A(r)) {
-        for (let e in r) {
-          let t = O(r) ? use(r[e]) : r[e];
-          A(t) ? N(t, (t) => (i.style[e] = t)) : (i.style[e] = t);
+      if ("style" == e && v(n) && !j(n)) {
+        for (let e in n) {
+          let t = S(n) ? use(n[e]) : n[e];
+          j(t) ? T(t, (t) => (i.style[e] = t)) : (i.style[e] = t);
         }
         delete t[e];
       }
     }
     for (let e in t) {
       let n = t[e];
-      A(n)
-        ? N(n, (t) => {
+      j(n)
+        ? T(n, (t) => {
             C(i, e, t);
           })
         : C(i, e, n);
     }
     return s && (i.innerHTML = i.innerHTML), i;
   }
-  function P(e, t) {
+  function N(e, t) {
     let n, r, s;
-    if (A(e)) _(e, t);
+    if (j(e)) k(e, t);
     else {
-      if (!T(e) || !(a in e)) {
+      if (!v(e) || !(l in e)) {
         if (e instanceof Node) return t(e), [e];
         if (e instanceof Array) {
-          for (n of ((r = []), e)) r = r.concat(P(n, t));
-          return r[0] || (r = P("", t)), r;
+          for (n of ((r = []), e)) r = r.concat(N(n, t));
+          return r[0] || (r = N("", t)), r;
         }
-        return null == e && (e = ""), (s = $.createTextNode(e)), t(s), [s];
+        return null == e && (e = ""), (s = m.createTextNode(e)), t(s), [s];
       }
-      _(e[a], t, e);
+      k(e[l], t, e);
     }
   }
-  function C(e, t, r) {
-    if ((!r && e.hasAttribute(t) && e.removeAttribute(t), r))
+  function C(e, t, n) {
+    if ((!n && e.hasAttribute(t) && e.removeAttribute(t), n))
       if (t.startsWith("on:")) {
-        n("function" == typeof r, "on: requires a function");
-        let s = t.substring(3);
-        for (let t of s.split("$"))
+        let r = t.substring(3);
+        for (let t of r.split("$"))
           e.addEventListener(t, (...t) => {
-            (self.$el = e), r(...t);
+            (self.$el = e), n(...t);
           });
-      } else e.setAttribute(t, r);
+      } else e.setAttribute(t, n);
   }
-  var F;
-  (window.DREAMLAND_SECRET_DEV_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED = {
-    ...u,
-    isDLPtrInternal: j,
-    handle: N,
+  (e.$if = function (e, t, n) {
+    return (
+      (n ??= m.createTextNode("")),
+      j(e) ? { [l]: e, then: t, otherwise: n } : e ? t : n
+    );
   }),
-    (F = "Version: 0.0.25"),
-    console.log("[dreamland-js/dev] " + F),
-    console.warn(
-      "This is a DEVELOPER build of dreamland.js. It is not suitable for production use."
-    ),
-    console.info("Enabled features:", DLFEATURES.join(", ")),
-    (e.$if = function (e, t, n) {
-      return (
-        (n ??= $.createTextNode("")),
-        A(e) ? { [a]: e, then: t, otherwise: n } : e ? t : n
-      );
-    }),
     (e.$state = x),
-    (e.$store = function (e, { ident: t, backing: r, autosave: o }) {
+    (e.$store = function (e, { ident: t, backing: r, autosave: s }) {
       let i, l;
-      if ("string" == typeof r)
+      if ("string" == typeof r) {
         if ("localstorage" === r)
           (i = () => localStorage.getItem(t)),
             (l = (e, t) => {
               localStorage.setItem(e, t);
             });
-        else n("Unknown store type: " + r);
-      else ({ read: i, write: l } = r);
-      let a = () => {
+      } else ({ read: i, write: l } = r);
+      let f = () => {
           console.info("[dreamland.js]: saving " + t);
-          let r = {},
-            s = 0,
-            o = (e) => {
-              let t = { stateful: O(e), values: {} },
-                i = s++;
-              r[i] = t;
-              for (let r in e) {
-                let s = e[r];
-                if (!A(s))
-                  switch (typeof s) {
+          let n = {},
+            r = 0,
+            s = (e) => {
+              let t = { stateful: S(e), values: {} },
+                i = r++;
+              n[i] = t;
+              for (let n in e) {
+                let r = e[n];
+                if (!j(r))
+                  switch (typeof r) {
                     case "string":
                     case "number":
                     case "boolean":
                     case "undefined":
-                      t.values[r] = JSON.stringify(s);
+                      t.values[n] = JSON.stringify(r);
                       break;
                     case "object":
-                      if (s instanceof Array) {
-                        t.values[r] = s.map((e) =>
-                          "object" == typeof e ? o(e) : JSON.stringify(e)
+                      if (r instanceof Array) {
+                        t.values[n] = r.map((e) =>
+                          "object" == typeof e ? s(e) : JSON.stringify(e)
                         );
                         break;
                       }
-                      null === s
-                        ? (t.values[r] = "null")
-                        : (n(
-                            s.__proto__ === Object.prototype,
-                            "Only plain objects can be serialized in stores"
-                          ),
-                          (t.values[r] = o(s)));
-                      break;
-                    case "symbol":
-                    case "function":
-                    case "bigint":
-                      n("Unsupported type: " + typeof s);
+                      null === r
+                        ? (t.values[n] = "null")
+                        : (r.__proto__, Object.prototype, (t.values[n] = s(r)));
                   }
               }
               return i;
             };
-          o(e);
-          let i = JSON.stringify(r);
+          s(e);
+          let i = JSON.stringify(n);
           l(t, i);
         },
-        f = (e, t, n) => {
-          O(n) && (n[s][c] = f), a();
+        a = (e, t, r) => {
+          S(r) && (r[n][o] = a), f();
         },
-        u = JSON.parse(i(t));
-      if (u) {
+        c = JSON.parse(i(t));
+      if (c) {
         let t = {},
           n = (e) => {
             if (t[e]) return t[e];
-            let r = u[e],
-              s = {};
+            let r = c[e],
+              i = {};
             for (let e in r.values) {
               let t = r.values[e];
-              s[e] =
+              i[e] =
                 "string" == typeof t
                   ? JSON.parse(t)
                   : t instanceof Array
                   ? t.map((e) => ("string" == typeof e ? JSON.parse(e) : n(e)))
                   : n(t);
             }
-            r.stateful && "auto" == o && (s[c] = f);
-            let i = r.stateful ? x(s) : s;
-            return (t[e] = i), i;
+            r.stateful && "auto" == s && (i[o] = a);
+            let l = r.stateful ? x(i) : i;
+            return (t[e] = l), l;
           };
         e = n(0);
       }
-      switch (o) {
+      switch (s) {
         case "beforeunload":
-          addEventListener("beforeunload", a);
+          addEventListener("beforeunload", f);
           break;
         case "manual":
           break;
         case "auto":
-          e[c] = f;
-          break;
-        default:
-          n("Unknown autosave type: " + o);
+          e[o] = a;
       }
       return x(e);
     }),
-    (e.Fragment = v),
-    (e.css = b),
-    (e.h = D),
+    (e.Fragment = g),
+    (e.css = d),
+    (e.h = A),
     (e.html = function (e, ...t) {
       e = [...e];
-      let r = "",
-        s = {};
-      for (let n = 0; n < e.length; n++) {
-        let o = e[n],
-          i = t[n],
-          l = t[n] instanceof Function && /^ *\/>/.exec(e[n + 1]);
+      let n = "",
+        r = {};
+      for (let s = 0; s < e.length; s++) {
+        let i = e[s],
+          l = t[s],
+          o = t[s] instanceof Function && /^ *\/>/.exec(e[s + 1]);
         if (
-          (/< *$/.test(o) &&
-            l &&
-            (e[n + 1] = e[n + 1].substr(l.index + l[0].length)),
-          (r += o),
-          n < t.length)
+          (/< *$/.test(i) &&
+            o &&
+            (e[s + 1] = e[s + 1].substr(o.index + o[0].length)),
+          (n += i),
+          s < t.length)
         ) {
           let e,
-            t = Object.values(s).findIndex((e) => e === i);
-          -1 !== t ? (e = Object.keys(s)[t]) : ((e = "h" + m()), (s[e] = i)),
-            (r += e),
-            l && (r += `></${e}>`);
+            t = Object.values(r).findIndex((e) => e === l);
+          -1 !== t ? (e = Object.keys(r)[t]) : ((e = "h" + c()), (r[e] = l)),
+            (n += e),
+            o && (n += `></${e}>`);
         }
       }
-      let o = new DOMParser().parseFromString(r, "text/html");
+      let s = new DOMParser().parseFromString(n, "text/html");
       return (
-        n(1 == o.body.children.length, "html builder needs exactly one child"),
+        s.body.children.length,
         (function e(t) {
           let n = t.nodeName.toLowerCase();
           if ("#text" === n) return t.textContent;
-          n in s && (n = s[n]);
-          let r = [...t.childNodes].map(e);
-          for (let e = 0; e < r.length; e++) {
-            let t = r[e];
+          n in r && (n = r[n]);
+          let s = [...t.childNodes].map(e);
+          for (let e = 0; e < s.length; e++) {
+            let t = s[e];
             if ("string" == typeof t)
-              for (const [n, o] of Object.entries(s)) {
+              for (const [n, i] of Object.entries(r)) {
                 if (!t) break;
                 if (!t.includes(n)) continue;
-                let s;
-                ([s, t] = t.split(n)),
-                  (r = [...r.slice(0, e), s, o, t, ...r.slice(e + 1)]),
+                let r;
+                ([r, t] = t.split(n)),
+                  (s = [...s.slice(0, e), r, i, t, ...s.slice(e + 1)]),
                   (e += 2);
               }
           }
-          let o = {};
+          let i = {};
           if (!t.attributes) return t;
           for (const e of [...t.attributes]) {
             let t = e.nodeValue;
-            t in s && (t = s[t]), (o[e.name] = t);
+            t in r && (t = r[t]), (i[e.name] = t);
           }
-          return D(n, o, r);
-        })(o.body.children[0])
+          return A(n, i, s);
+        })(s.body.children[0])
       );
     }),
-    (e.isDLPtr = A),
-    (e.isStateful = O),
-    (e.scope = g);
-})(window);
-(() => {
+    (e.isDLPtr = j),
+    (e.isStateful = S),
+    (e.scope = p);
+})(window)(() => {
   const TAILWIND_COLORS = {
     stone: {
       50: "oklch(0.985 0.001 106.423)",
@@ -867,7 +794,7 @@ const DLFEATURES = ["css", "jsxLiterals", "usestring", "stores"],
 
                 console.log("ATTEMPT EXPRESSION: ", attemptState[key]);
               } else if (keyStr.includes("radio")) {
-                console.log("GOT REMOVE RADIO")
+                console.log("GOT REMOVE RADIO");
                 const attempt = attemptState[key];
                 const correctSelect = attempt.choiceStates.findIndex(
                   (c) => c.selected

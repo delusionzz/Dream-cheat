@@ -1,15 +1,14 @@
 # dream-cheat
 
-To install dependencies:
+## Usage
 
-```bash
-bun install
-```
+### Userscript
 
-To run:
+To use as a userscript you can use one of the following options:
 
-```bash
-bun run 
-```
+- [violentMonkey](https://violentmonkey.github.io/)
+- [TamperMonkey](https://www.tampermonkey.net/)
 
-This project was created using `bun init` in bun v1.2.8. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+### Reporting problems
+
+- Join the [Discord](https://discord.gg/QRqKA9w8mf) and make a post in the `Bugs` forum.
